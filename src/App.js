@@ -5,18 +5,48 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import FirstPage from './Pages/FirstPage';
 import SecondPage from './Pages/SecondPage';
 import ThirdPage from './Pages/ThirdPage';
+import Login from './Pages/Login'
+import AdminPage from './LoginComp/Admin';
+import { ProtectedRoute } from './LoginComp/ProtectedRoute';
+import UndefPage from './LoginComp/UndefPage';
+
+
 
 function App() {
   return (
+    
     <Router>
-      <Navbar />
+      
+      
+      <Route path='/admin'>
+      <AdminPage/>
+      </Route>
       <Switch>
-        <Route path='/' exact component={FirstPage} />
-        <Route path='/first' exact component={FirstPage} />
-        <Route path='/second' component={SecondPage} />
-        <Route path='/third' component={ThirdPage} />
+      <ProtectedRoute path='/admin' component={AdminPage}/>
+        <Route exact path='/'>
+          <Navbar/>
+          <FirstPage/>
+        </Route>
+        <Route exact path='/first'>
+          <Navbar />
+          <FirstPage/>
+        </Route>
+        <Route exact path='/second'>
+          <Navbar/>
+          <SecondPage/>
+        </Route>
+        <Route exact path='/third'>
+          <Navbar/>
+          <ThirdPage/>
+        </Route>
+        <Route exact path='/log'>
+          <Login/>
+        </Route>
+        <Route path="*" component={UndefPage} />  
       </Switch>
+
     </Router>
+    
   );
 }
 
