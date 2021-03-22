@@ -6,12 +6,14 @@ export const Nav = styled.nav`
   background: #000;
   height: 80px;
   display: flex;
+  background-color: #000;
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
   z-index: 10;
   /* Third Nav */
   /* justify-content: flex-start; */
 `;
+
 
 export const NavLink = styled(Link)`
   color: #fff;
@@ -20,10 +22,28 @@ export const NavLink = styled(Link)`
   text-decoration: none;
   padding: 0 1rem;
   height: 100%;
+  max-height: 100px;
   cursor: pointer;
   &.active {
     color: #15cdfc;
   }
+  :hover {
+    -moz-transition: background-color 0.2s 0.1s ease;
+-o-transition: background-color 0.2s 0.1s ease;
+-webkit-transition: background-color 0.2s 0.1s ease;
+-moz-transition: box-shadow 50ms 0.1s ease;
+-o-transition: box-shadow 50ms 0.1s ease;
+-webkit-transition: box-shadow 50ms 0.1s ease;
+    background: #03e9f4;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #03e9f4,
+                0 0 25px #03e9f4,
+                0 0 50px #03e9f4,
+                0 0 100px #03e9f4;
+  
+  }
+  
 `;
 
 export const Bars = styled(FaBars)`

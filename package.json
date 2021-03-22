@@ -17,6 +17,8 @@
     "react-admin": "^3.13.3",
     "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",
+    "react-infinite-scroll-component": "^6.0.0",
+    "react-loading": "^2.0.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "styled-components": "^5.2.1",
@@ -29,7 +31,7 @@
     "eject": "react-scripts eject",
     "server": "json-server --watch db.json --port 5000 --middlewares ./range.js",
     "foriti": "npm start --prefix foriti",
-    "dev":"concurrenly\"npm run server\"\"npm run client\""
+    "dev": "concurrenly\"npm run server\"\"npm run client\""
   },
   "eslintConfig": {
     "extends": [

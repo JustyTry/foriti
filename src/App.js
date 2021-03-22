@@ -17,10 +17,6 @@ function App() {
     
     <Router>
       
-      
-      <Route path='/admin'>
-      <AdminPage/>
-      </Route>
       <Switch>
       <ProtectedRoute path='/admin' component={AdminPage}/>
         <Route exact path='/'>
