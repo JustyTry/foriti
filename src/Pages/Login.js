@@ -1,7 +1,9 @@
 import React from "react";
 import './login.css'
 import { useHistory} from "react-router-dom";
-import auth from '../LoginComp/Auth'
+import auth from '../LoginComp/Auth';
+
+
 const Login = props => {
   let history = useHistory()
   

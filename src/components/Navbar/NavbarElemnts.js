@@ -41,7 +41,6 @@ export const NavLink = styled(Link)`
                 0 0 25px #03e9f4,
                 0 0 50px #03e9f4,
                 0 0 100px #03e9f4;
-  
   }
   
 `;
@@ -70,9 +69,19 @@ export const NavMenu = styled.div`
   /* width: 100vw;
   white-space: nowrap; */
   @media screen and (max-width: 768px) {
-    display: none;
+    display: block;
+    text-align: center;
+    left: -100%;
+    position: fixed;
+    transition: all .5s;
+    width: 100%;
+    top: 80px;
+    height: 100vh;
+    background-color: #00000f;
+    
   }
 `;
+
 
 export const NavBtn = styled.nav`
   display: flex;

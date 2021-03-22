@@ -22,7 +22,7 @@ export default function FirstPage() {
   const [loading, setLoading] = useState(true);
   
   const fetchtodo = async () =>
-    fetch(`https://jsonplaceholder.typicode.com/posts`)
+    fetch(`http://localhost:5000/users`)
       .then((response) => response.json())
       .then((json) => {
         settodo(json);
@@ -64,13 +64,13 @@ export default function FirstPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {todo.map((row) => (
+            {todo.users.map((row) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.id}
                 </TableCell>
-                <TableCell align="left">{row.title}</TableCell>
-                <TableCell align="left">{row.body}</TableCell>
+                <TableCell align="left">{row.name}</TableCell>
+                <TableCell align="left">{row.id}</TableCell>
                 <TableCell align="left">3</TableCell>
                 <TableCell align="left">4</TableCell>
               </TableRow>
