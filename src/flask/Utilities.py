@@ -1,13 +1,15 @@
-import openpyxl
 import json
 import os
+
+from openpyxl import Workbook, load_workbook
+from random import randint
 
 
 class SubjectIsAlreadyExists(Exception):
     pass
 
 
-def save_xlsx_file(filename, byte_data):
+def save_xlsx_file(filename, byte_data) -> Workbook:
     """
     Функция создаёт xlsx файл из полученного массива байт.
     :param filename: Имя файла, в котоырй будет сохранён массив байт
@@ -19,7 +21,7 @@ def save_xlsx_file(filename, byte_data):
     directory = f"temp_files/{filename}"
     with open(directory, "wb") as file:
         file.write(byte_data)
-    return openpyxl.load_workbook(directory)
+    return load_workbook(directory)
 
 
 class JsonDB(dict):
@@ -62,7 +64,7 @@ class JsonDB(dict):
 
 
 class Day(JsonDB):
-    def __init__(self, name, subjects_database: dict):
+    def __init__(self, name, subjects_database: dict, data: dict = None):
         """
         Класс для работы с участниками. Для каждого года
         создаётся новая база данных (возможно скопируем эту, только без данных).
@@ -72,7 +74,10 @@ class Day(JsonDB):
         """
         directory = f"databases/{name}"
         if not os.path.exists(directory):
-            super(Day, self).__init__(name, {"users": []})
+            if data:
+                super(Day, self).__init__(name, data)
+            else:
+                super(Day, self).__init__(name, {"users": []})
         else:
             super(Day, self).__init__(name)
         self.subject_database = subjects_database
@@ -92,17 +97,22 @@ class Day(JsonDB):
                     self["users"][student_id - 1]['days'][self.day][subject] = [score, -1]
                 except IndexError:
                     self["users"][student_id - 1]['days'].append({subject: [score, -1]})
-                return 0  # Всё прошло успешно
+                return {"verdict": "ok"}  # Всё прошло успешно
             else:
-                return 2  # Этого предмета в этот день нет
+                return {"verdict": "This subject doesn't exist today"}  # Этого предмета в этот день нет
         else:
-            return 1  # Такого предмета не существует
+            return {"verdict": "This subject doesn't exist"}  # Такого предмета не существует
 
     def set_day(self, new_day=None):
         if new_day:
             self.day = new_day
         else:
             self.day += 1
+
+    def find_item_with_id(self, id: int) -> dict:
+        for i in range(len(self["users"])):
+            if id == self["users"][i]["id"]:
+                return self["users"][i]
 
     @property
     def results(self) -> dict:
@@ -118,6 +128,27 @@ class Day(JsonDB):
     def classes_count(self) -> tuple:
         temp = {self["users"][index]["class"] for index in range(len(self["users"]))}
         return min(temp), max(temp) + 1
+
+
+def json_from_xlsx(file: Workbook, days: Day):
+    wb = file.active
+    for i, elem in enumerate(list(wb.rows)[1::], 1):
+        student_id, name, stage, *rubbish = [k.value for k in elem]
+        if not name:
+            continue
+        try:
+            class_digit = stage[:-1]
+            class_letter = stage[-1]
+        except TypeError:
+            class_digit = stage
+            class_letter = ""
+        days["users"].append({
+            "id": i,
+            "name": name,
+            "class": int(class_digit),
+            "class_letter": class_letter,
+            "days": []})
+    days.commit()
 
 
 def all_subject_results(results: dict, subject, class_digit) -> (dict, int):
@@ -142,13 +173,13 @@ def recount(day: Day, all_subjects: JsonDB) -> int:
                 else:
                     percent = all_subjects[subject][1] / 200
                 for i, val in subject_result.items():
-                    day["users"][user_id]["days"][day.day][subject][1] = val / percent
+                    day["users"][user_id]["days"][day.day][subject][1] = round(val / percent, 1)
                 day.commit()
     return 1
 
 
 def sorting(day: Day):
-    day["users"].sort(lambda x: x["id"])
+    day["users"].sort(key=lambda x: x["id"])
     day.commit()
 
 

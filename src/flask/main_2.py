@@ -20,7 +20,7 @@ def new_db(data: dict):  # по поводу этой штуки вообще н
 
 
 subjects = JsonDB("subjects.json")
-d = Day("test.json", subjects)
+d = Day("test1.json", subjects)
 admins = JsonDB("admins.json", {})
 
 
@@ -42,7 +42,39 @@ def users():
     else:
         data = request.data
         xlsx_file = save_xlsx_file(str(datetime.now().date()) + ".xlsx", data)
-        return "0"
+        json_from_xlsx(xlsx_file, d)
+        # sorting(d)
+        return {"verdict": "ok"}, 200
+
+
+@app.route("/replace_results", methods=["PUT"])
+def replace_results():
+    global d
+    data = request.get_json()
+    if data["is_admin"]:
+        del data["is_admin"]
+        d = Day(d.directory.split("/")[1], subjects, data)
+        return {"verdict": "ok"}, 200
+    return {"error": "You haven't admin's roots"}, 400
+
+
+@app.route("/users/<int:id>", methods=["PATCH"])
+def patch_results(id):
+    item = d.find_item_with_id(id)
+    not_valid = []
+    if item:
+        data = request.get_json()
+        for i in data.items():
+            if i[0] in item.keys():
+                item[i[0]] = i[1]
+            else:
+                not_valid.append(i)
+        if not_valid:
+            return {"error": {"not_valid": not_valid}}, 400
+        else:
+            return {"verdict": "ok"}, 200
+    else:
+        return {"error": "No such id in database"}, 400
 
 
 @app.route("/users_sum")
@@ -51,7 +83,7 @@ def all_sum():
     for i in result['users']:
         i['result'] = sum([int(k[1]) for j in i['days'] for k in j.values()])
         del i['days']
-    return jsonify(result)
+    return jsonify(result), 200
 
 
 @app.route("/add_result/<int:user_id>", methods=["POST"])
