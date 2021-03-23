@@ -57,9 +57,10 @@ export default function FirstPage() {
           <TableHead>
             <TableRow>
               <TableCell>№</TableCell>
-              <TableCell align="left">ID участника</TableCell>
+              <TableCell align="left">Имя</TableCell>
+              <TableCell align="left">Класс</TableCell>
+              <TableCell align="left">Буква</TableCell>
               <TableCell align="left">Предметы</TableCell>
-              <TableCell align="left">Баллы</TableCell>
               <TableCell align="left">Чистые баллы</TableCell>
             </TableRow>
           </TableHead>
@@ -69,10 +70,11 @@ export default function FirstPage() {
                 <TableCell component="th" scope="row">
                   {row.id}
                 </TableCell>
-                <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.id}</TableCell>
-                <TableCell align="left">3</TableCell>
-                <TableCell align="left">4</TableCell>
+              <TableCell align="left">{row.name}</TableCell>
+              <TableCell align="left">{row.class}</TableCell>
+              <TableCell align="left">{row.class_letter}</TableCell>
+              <TableCell align="left">{row.days}</TableCell>
+              <TableCell align="left">0</TableCell>
               </TableRow>
             ))}
           </TableBody>
