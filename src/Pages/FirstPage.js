@@ -33,7 +33,9 @@ export default function FirstPage() {
   useEffect(() => {
     fetchtodo(todo);
   }, [todo]);
-
+ 
+  const [searchTerm, setSearchTerm] = useState('')
+  
   return (
     <>
       {loading ? (
@@ -46,7 +48,8 @@ export default function FirstPage() {
       ) : (
    
           
-        
+        <>
+        <input placeholder='Введите номер' type='text' onChange={(e) => setSearchTerm(e.target.value)}/>
         <TableContainer styles={Paper} className='page'>
         <Table
           className={classes.table}
@@ -65,7 +68,13 @@ export default function FirstPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {todo.users.map((row) => (
+            {todo.users.filter((val) => {
+              if(searchTerm === ''){
+                return val
+              }else if(val.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                return val
+              }
+            }).map((row) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.id}
@@ -80,6 +89,7 @@ export default function FirstPage() {
           </TableBody>
         </Table>
         </TableContainer>
+        </>
       )}
     </>
   );
