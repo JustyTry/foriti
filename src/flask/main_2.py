@@ -1,3 +1,4 @@
+
 from copy import deepcopy
 from flask import Flask, request, jsonify
 from Utilities import *
@@ -90,7 +91,6 @@ def patch_results(id):
 
 
 @app.route("/users_sum")
-
 def all_sum():
     result = {'users': deepcopy(d['users'])}
     for i in result['users']:
@@ -152,8 +152,8 @@ def add_user():
 def check_admins():
     data = request.get_json()
     try:
-        if any(map(lambda x: x["login"] == data["login"] and x["password"] == data["password"], admins["admins"])):
-            return {"data": {"access": True}}, 200
+        if any(map(lambda x: x["login"] == data["login"] and x["password"] == data["password"], admins["data"])):
+            return {"data": {"access": True, "speciality": admins.get_from_key("subject")}}, 200
         return {"data": {"access": False}}, 200
     except Exception as ex:
         print(ex)
@@ -217,7 +217,7 @@ def betters_student_from_subject(subject):
 
 
 @app.route("/subjects")
-def getSubjects():
+def get_subjects():
     return subjects, 200
 
 
@@ -234,6 +234,7 @@ def delete_user():
     except Exception as ex:
         print(ex)
         return {"error": "BadRequest"}, 400
+
 
 
 if __name__ == '__main__':
