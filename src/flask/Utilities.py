@@ -1,8 +1,8 @@
+import openpyxl
 import json
 import os
 
-from openpyxl import Workbook, load_workbook
-from random import randint
+from openpyxl import Workbook
 
 
 class SubjectIsAlreadyExists(Exception):
@@ -21,7 +21,7 @@ def save_xlsx_file(filename, byte_data) -> Workbook:
     directory = f"temp_files/{filename}"
     with open(directory, "wb") as file:
         file.write(byte_data)
-    return load_workbook(directory)
+    return openpyxl.load_workbook(directory)
 
 
 class JsonDB(dict):
@@ -114,6 +114,18 @@ class Day(JsonDB):
             if id == self["users"][i]["id"]:
                 return self["users"][i]
 
+    def find_item_with_class(self, class_dig: int) -> list:
+        if class_dig not in range(5, 10):
+            raise IndexError(f"Class digit must be in range(5, 10), not {class_dig}")
+        return list(filter(lambda x: x["class"] == class_dig, self["users"]))
+
+    def find_item_with_subjects(self, subject: str) -> list:
+        temp = list(filter(lambda x: subject in [k for i in x["days"] for k in i.keys()], self["users"]))
+        for i, student in enumerate(temp):
+            subjects = {k[0]: k[1] for i in student["days"] for k in i.items()}
+            temp[i][subject] = subjects[subject]
+        return temp
+
     @property
     def results(self) -> dict:
         """Эта штуковина возвращает результаты участников по id и классам"""
@@ -130,10 +142,20 @@ class Day(JsonDB):
         return min(temp), max(temp) + 1
 
 
+def is_data_edited(student_id: int, name, stage, days: Day) -> bool:
+    ids = [i["id"] for i in days["users"]]
+    for i in days["users"]:
+        if (student_id == i["id"] and (name != i["name"] or stage != i["class"])) or student_id not in ids:
+            return True
+    return False
+
+
 def json_from_xlsx(file: Workbook, days: Day):
     wb = file.active
-    for i, elem in enumerate(list(wb.rows)[1::], 1):
-        student_id, name, stage, *rubbish = [k.value for k in elem]
+    for i in list(wb.rows)[1::]:
+        student_id, name, stage, *rubbish = [k.value for k in i]
+        if not is_data_edited(student_id, name, stage, days):
+            continue
         if not name:
             continue
         try:
@@ -159,6 +181,10 @@ def all_subject_results(results: dict, subject, class_digit) -> (dict, int):
     if not len(temp):
         return 5
     return temp
+
+
+def student_sum(student: dict) -> int:
+    return sum([int(k[1]) for j in student['days'] for k in j.values()])
 
 
 def recount(day: Day, all_subjects: JsonDB) -> int:
