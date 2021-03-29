@@ -35,21 +35,26 @@ const apiUrl =
       
     },
     
-    getOne:     (resource, params) => (() => {return Promise.resolve({})
-  .then(() => {
-    console.log('success')
-    return Promise.reject()
-    .catch(error => {
-      console.log("something bad happened somewhere, rollback!");
-  });
-  })}),
-    getMany:    (resource, params) => (() => {return Promise.reject()}),
-    getManyReference: (resource, params) => (() => {return Promise.reject()}),
-    create:     (resource, params) => (() => {return Promise.reject()}),
-    update:     (resource, params) => (() => {return Promise.reject()}),
-    updateMany: (resource, params) => (() => {return Promise.reject()}),
-    delete:     (resource, params) => (() => {return Promise.reject()}),
-    deleteMany: (resource, params) => (() => {return Promise.reject()}),
+    getOne:     (resource, params) => { return httpClient(`${apiUrl}/users`).then(
+      console.log('nath')
+      
+    ).catch((e) =>{
+      console.log(e)
+      return Promise.reject()
+    })},
+    getMany:    (resource, params) => Promise,
+    getManyReference: (resource, params) => Promise,
+    create:     (resource, params) => Promise,
+    update:     (resource, params) => {if (resource !== 'posts' || !params.data.pictures) {
+      return restProvider.update(resource, params);
+  }},
+    updateMany: (resource, params) => Promise,
+    delete:     (resource, params) => { return httpClient(`${apiUrl}/delete_user`).then()
+    .catch((e) =>{
+      console.log(e)
+      return Promise.reject()
+    })},
+    deleteMany: (resource, params) => Promise,
   };
 
 const AdminPage = (props) => {
