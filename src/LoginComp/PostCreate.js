@@ -1,10 +1,11 @@
+import { Button } from "@material-ui/core";
 import React from "react";
 import {
   Create,
   SimpleForm,
   TextInput,
   RadioButtonGroupInput,
-  SaveContextProvider,
+  SaveContextProvider
 } from "react-admin";
 //add_user
 var xhr = new XMLHttpRequest();
@@ -58,5 +59,8 @@ const PostCreate = (props) => {
     </SaveContextProvider>
   );
 };
-
+const PostBulkActionButtons = props => (
+      <Button label='Добавить' {...props}/>
+      
+);
 export default PostCreate;

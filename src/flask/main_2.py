@@ -72,7 +72,7 @@ def replace_results():
 
 @app.route("/users/<int:id>", methods=["PATCH"])
 def patch_results(id):
-    item = d.find_item_with_id(id)
+    item = d.get_item_with_id(id)
     not_valid = []
     if item:
         data = request.get_json()
@@ -109,7 +109,7 @@ def add_result(user_id):
     data = request.get_json()
     if data["is_admin"]:
         data = data["data"]
-        student = d.find_item_with_id(user_id)
+        student = d.get_item_with_id(user_id)
         if student["class"] == data["class"] and subjects[data["subject"]][2] == student["class"]:
             return d.add_result(user_id, data["subject"], data["score"]), 200
     return {"error": "You aren't admin!"}, 401
@@ -151,7 +151,7 @@ def check_admins():
     data = request.get_json()
     try:
         if any(map(lambda x: x["login"] == data["login"] and x["password"] == data["password"], admins["data"])):
-            return {"data": {"access": 1, "speciality": admins.get_from_key("subject")}}, 200
+            return {"data": {"access": 1, "speciality": admins.get_from_key("login", data["login"])["subject"]}}, 200
         return {"data": {"access": 0}}, 200
     except Exception as ex:
         print(ex)
@@ -223,15 +223,23 @@ def get_subjects():
 def delete_user():
     data = request.get_json()
     try:
-        if data["is_admin"]:
+        if data.get("is_admin", False):
             data = data["data"]
-            a = d.find_item_with_id(data["id"])
-            del a
+            d.remove(d.get_item_with_id(data["id"]))
             return {"verdict": "ok"}, 200
         return {"error": "You aren't admin"}, 401
     except Exception as ex:
         print(ex)
         return {"error": "BadRequest"}, 400
+
+
+@app.route("/change_day", methods=["PUT"])
+def change_day():
+    if request.get_json().get("is_admin", False):
+        d.set_day(request.get_json()["new_day"])
+        return {"verdict": "ok"}, 200
+    else:
+        return {"error": "You aren't admin"}, 401
 
 
 if __name__ == '__main__':

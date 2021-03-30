@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React from "react";
 import {
   List,
   Datagrid,
@@ -11,24 +11,23 @@ import {
   TextInput,
   Pagination,
 } from "react-admin";
-import simpleRestProvider from 'ra-data-simple-rest'
+import PostBulkActionButtons from './PostCreate'
+import simpleRestProvider from "ra-data-simple-rest";
 
-simpleRestProvider('http://localhost:5000/delete_user')
+simpleRestProvider("http://localhost:5000/delete_user");
 const xhr = new XMLHttpRequest();
 const url = "http://localhost:5000/delete_user";
 
 const DeleteRequest = (gets) => {
-  
   xhr.open("DELETE", url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onreadystatechange = function () {
- 
-  };
+  xhr.onreadystatechange = function () {};
   try {
-    let hek = document.querySelector('#Uid')
-    let textid = hek.textContent
+    let hek = document.querySelector("#Uid");
+    let textid = hek.textContent;
     var data = JSON.stringify({
-      "id": textid,
+      is_admin: 1,
+      "data": {"id":parseInt(textid)},
     });
     console.log(data);
     xhr.send(data);
@@ -37,29 +36,38 @@ const DeleteRequest = (gets) => {
   }
 };
 
-
 const PostFilter = (props) => (
   <Filter {...props}>
-    <TextInput label="Искать" source="q" alwaysOn />
+    <TextInput label="Искать" source="id" alwaysOn />
     <ReferenceInput label="User" source="name" reference="users" allowEmpty>
       <SelectInput optionText="id" />
     </ReferenceInput>
   </Filter>
 );
 
-const PostPagination = props => <Pagination rowsPerPageOptions={[10, 25, 50, 100]} {...props} />;
+const PostPagination = (props) => (
+  <Pagination rowsPerPageOptions={[10, 25, 50, 100]} {...props} />
+);
 const UsersList = (props) => {
-    
   return (
-    <List filters={<PostFilter />} title='Список участников' {...props} pagination={<PostPagination />}>
+    <List
+      filters={<PostFilter />}
+      title="Список участников"
+      bulkActionButtons={PostBulkActionButtons}
+      {...props}
+    >
       <Datagrid>
-        <TextField label='Номер' id="Uid" source="id" />
-        <TextField label='Имя' source="name" />
-        <TextField label='Класс' source="class" />
-        <TextField label='Буква' source="class_letter" />
-        <EditButton label='Изменить' basePath="/users" />
-        
-        <DeleteButton label='Удалить' basePath="/users" onClick={DeleteRequest}/>
+        <TextField label="Номер" id="Uid" source="id" />
+        <TextField label="Имя" source="name" />
+        <TextField label="Класс" source="class" />
+        <TextField label="Буква" source="class_letter" />
+        <EditButton label="Изменить" basePath="/users" />
+
+        <DeleteButton
+          label="Удалить"
+          basePath="/users"
+          onClick={DeleteRequest}
+        />
       </Datagrid>
     </List>
   );

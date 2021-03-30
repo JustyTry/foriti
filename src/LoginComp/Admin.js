@@ -1,5 +1,5 @@
 import React from "react";
-import { Admin, Resource, fetchUtils, HttpError  } from "react-admin";
+import { Admin, Resource, fetchUtils, HttpError, useLogin, useNotify, Notification, defaultTheme   } from "react-admin";
 import restProvider from "ra-data-simple-rest";
 import UsersList from "./UsersList";
 import PostCreate from "./PostCreate";
@@ -8,6 +8,11 @@ import Login from "../Pages/Login";
 import { stringify } from "query-string";
 
 
+//Button components -------------------------------------------------
+
+
+
+//API components ---------------------------------------------------
 const apiUrl =
     "http://localhost:5000";
   const httpClient = fetchUtils.fetchJson;
@@ -23,13 +28,14 @@ const apiUrl =
         sort: JSON.stringify([field, order]),
         range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
         filter: JSON.stringify(params.filter),
+        
       };
       const url = `${apiUrl}/users_sum?sort=['title','ASC']&range=[0, 24]&filter={title:'bar'}/${resource}?${stringify(query)}`;
 
       return httpClient(url).then(({ headers, json }) => ({
-        data: json.users.filter((item, idx) => idx < 5).map((record) => ({ id: record.id, ...record })),
+        data: json.users.slice((page-1) * 40, page * 40).map((record) => ({ id: record.id, ...record })),
 
-        total: parseInt(headers.get("content-range"), 10),
+        total: parseInt(json.users.length / perPage , 20),
         
       }));
       
@@ -62,11 +68,24 @@ const AdminPage = (props) => {
   return (
     <Admin dataProvider={myDataProvider}  loginPage={Login}>
       <Resource
-        name="users"
+        name="День 1"
         list={UsersList}
         create={PostCreate}
         edit={PostEdit}
       />
+      <Resource
+        name="День 2"
+        list={UsersList}
+        create={PostCreate}
+        edit={PostEdit}
+      />
+      <Resource
+        name="День 3"
+        list={UsersList}
+        create={PostCreate}
+        edit={PostEdit}
+      />
+      
     </Admin>
   );
 };

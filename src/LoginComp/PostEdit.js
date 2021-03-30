@@ -38,9 +38,9 @@ const PostEdit = (props) => {
     <Edit title="Изменить" {...props}>
       <SimpleForm save={EditRequest}>
         <TextInput disabled source="id" id='id' />
-        <TextInput source="name" />
-        <TextInput multiline source="class" />
-        <TextInput label="Published" source="class_letter" />
+        <TextInput label="Имя" source="name" />
+        <TextInput label="Класс" source="class" />
+        <TextInput label="Буква" source="class_letter" />
       </SimpleForm>
     </Edit>
   );
