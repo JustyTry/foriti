@@ -4,7 +4,6 @@ from Utilities import *
 from datetime import datetime
 from flask_cors import CORS, cross_origin
 
-
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 cors = CORS(app)
@@ -12,11 +11,9 @@ cors = CORS(app)
 
 def new_db(data: dict):  # по поводу этой штуки вообще не уверен
     global subjects, d
-    if data["is_admin"]:
-        subjects = JsonDB(f"subjects-{datetime.now().date()}.json", {})
-        d = Day(str(datetime.now().date()) + ".json", subjects)
-        return {"verdict": "ok"}, 200
-    return {"error": "You aren't admin"}, 401
+    subjects = JsonDB(f"subjects-{datetime.now().date()}.json", {})
+    d = Day(str(datetime.now().date()) + ".json", subjects)
+    return {"verdict": "ok"}, 200
 
 
 subjects = JsonDB("subjects.json")
@@ -51,7 +48,7 @@ def users_per_day(day):
             try:
                 temp_data["users"][i]["results"] = temp_data["users"][i]["days"][day]
             except IndexError:
-                temp_data["users"][i]["results"] = []
+                temp_data["users"][i]["results"] = {}
             del temp_data["users"][i]["days"]
         return temp_data
     except Exception as ex:
@@ -63,11 +60,8 @@ def users_per_day(day):
 def replace_results():
     global d
     data = request.get_json()
-    if data["is_admin"]:
-        del data["is_admin"]
-        d = Day(d.directory.split("/")[1], subjects, data)
-        return {"verdict": "ok"}, 200
-    return {"error": "You haven't admin's roots"}, 401
+    d = Day(d.directory.split("/")[1], subjects, data)
+    return {"verdict": "ok"}, 200
 
 
 @app.route("/users/<int:id>", methods=["PATCH"])
@@ -89,7 +83,7 @@ def patch_results(id):
         return {"error": "No such id in database"}, 404
 
 
-@app.route("/users_sum")
+@app.route("/sum")
 def all_sum():
     result = {'users': deepcopy(d['users'])}
     for i in result['users']:
@@ -107,12 +101,10 @@ def add_result(user_id):
     """
     # Пример запроса в файле add_result.json
     data = request.get_json()
-    if data["is_admin"]:
-        data = data["data"]
-        student = d.get_item_with_id(user_id)
-        if student["class"] == data["class"] and subjects[data["subject"]][2] == student["class"]:
-            return d.add_result(user_id, data["subject"], data["score"]), 200
-    return {"error": "You aren't admin!"}, 401
+    student = d.get_item_with_id(user_id)
+    if subjects[data["subject"]][2] == student["class"]:
+        return d.add_result(user_id, data["subject"], data["score"])
+    return {"error": "Этот пользователь не может писать этот предмет"}, 400
 
 
 @app.route("/test_for_correct", methods=["POST"])
@@ -122,7 +114,8 @@ def search():
     if not any(map(lambda x: x == data['id'], d["users"])):
         return {"error": "This id doesn't exist"}, 400  # Ошибка идентификатора
     elif data["subject"] not in subjects.keys():
-        return {"error": "This subject doesn't exist"}, 400  # Такого предмета не существует
+        # Такого предмета не существует
+        return {"error": "This subject doesn't exist"}, 400
     elif data["score"] not in range(subjects[data["subject"]][1] + 1):
         return {"error": "Unbelievable score"}, 400  # Невозможные баллы
     else:
@@ -166,12 +159,9 @@ def route_new_db():
 @app.route("/add_admin", methods=["POST"])
 def add_admin():
     data = request.get_json()
-    if data["is_admin"]:
-        data.pop("is_admin")
-        admins["admins"].append(data)
-        admins.commit()
-        return {"verdict": "ok"}, 200
-    return {"error": "You aren't admin"}, 401
+    admins["admins"].append(data)
+    admins.commit()
+    return {"verdict": "ok"}, 200
 
 
 @app.route("/remove_admin", methods=['POST'])
@@ -216,18 +206,15 @@ def betters_student_from_subject(subject):
 
 @app.route("/subjects")
 def get_subjects():
-    return subjects, 200
+    return {"data": list(subjects.keys())}, 200
 
 
 @app.route("/delete_user", methods=["DELETE"])
 def delete_user():
     data = request.get_json()
     try:
-        if data.get("is_admin", False):
-            data = data["data"]
-            d.remove(d.get_item_with_id(data["id"]))
-            return {"verdict": "ok"}, 200
-        return {"error": "You aren't admin"}, 401
+        d.remove(d.get_item_with_id(data["id"]))
+        return {"verdict": "ok"}, 200
     except Exception as ex:
         print(ex)
         return {"error": "BadRequest"}, 400
@@ -235,11 +222,18 @@ def delete_user():
 
 @app.route("/change_day", methods=["PUT"])
 def change_day():
-    if request.get_json().get("is_admin", False):
-        d.set_day(request.get_json()["new_day"])
-        return {"verdict": "ok"}, 200
-    else:
-        return {"error": "You aren't admin"}, 401
+    d.set_day(request.get_json()["new_day"])
+    return {"verdict": "ok"}, 200
+
+
+@app.route("/users/betters/<subject>/<int:class_d>")
+def betters_student_from_subject_n_class(subject, class_d):
+    return {"data": list(filter(lambda x: x["class"] == class_d, betters_student_from_subject(subject)))}, 200
+
+
+@app.route("/admins")
+def get_admins():
+    return jsonify(admins), 200
 
 
 if __name__ == '__main__':

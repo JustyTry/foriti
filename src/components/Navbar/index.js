@@ -10,15 +10,16 @@ const Navbar = () => {
         </NavLink>
         <Bars />
         <NavMenu>
+        <NavLink to="/top" activeStyle>
+            Лучшие результаты
+          </NavLink>
           <NavLink to="/first" activeStyle>
             Первый день
           </NavLink>
           <NavLink to="/second" activeStyle>
             Второй день
           </NavLink>
-          <NavLink to="/third" activeStyle>
-            Третий день
-          </NavLink>
+          
         </NavMenu>
         <NavBtn>
             <NavBtnLink to='/log'>

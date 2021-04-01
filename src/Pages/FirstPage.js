@@ -83,7 +83,7 @@ export default function FirstPage() {
               <TableCell align="left">{row.class}</TableCell>
               <TableCell align="left">{row.class_letter}</TableCell>
               <TableCell align="left">{row.days}</TableCell>
-              <TableCell align="left">0</TableCell>
+              <TableCell align="left">{row.result}</TableCell>
               </TableRow>
             ))}
           </TableBody>

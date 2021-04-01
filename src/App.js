@@ -31,7 +31,7 @@ function App() {
           <Navbar/>
           <SecondPage/>
         </Route>
-        <Route exact path='/third'>
+        <Route exact path='/top'>
           <Navbar/>
           <ThirdPage/>
         </Route>

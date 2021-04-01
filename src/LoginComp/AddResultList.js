@@ -3,16 +3,13 @@ import {
   List,
   Datagrid,
   TextField,
-  EditButton,
-  DeleteButton,
   Filter,
   ReferenceInput,
   SelectInput,
   TextInput,
-  Pagination,TopToolbar,SortButton,CreateButton,ExportButton
+  TopToolbar,SortButton,CreateButton
 } from "react-admin";
-import PostBulkActionButtons from './PostCreate'
-import simpleRestProvider from "ra-data-simple-rest";
+
 ////////////////////////////////////////
 const ListActions = (props) => (
     <>
@@ -24,27 +21,6 @@ const ListActions = (props) => (
 );
 
 ////////////////////////////////////
-simpleRestProvider("http://localhost:5000/delete_user");
-const xhr = new XMLHttpRequest();
-const url = "http://localhost:5000/delete_user";
-
-const DeleteRequest = (gets) => {
-  xhr.open("DELETE", url, true);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onreadystatechange = function () {};
-  try {
-    let hek = document.querySelector("#Uid");
-    let textid = hek.textContent;
-    var data = JSON.stringify({
-
-      "id":parseInt(textid),
-    });
-    console.log(data);
-    xhr.send(data);
-  } catch (e) {
-    console.log(e);
-  }
-};
 
 const PostFilter = (props) => (
   <Filter {...props}>
@@ -55,10 +31,7 @@ const PostFilter = (props) => (
   </Filter>
 );
 
-
-const UsersList = (props) => {
-    
-
+const AddResultList = (props) => {
   return (
     <List
       filters={<PostFilter />}
@@ -71,17 +44,9 @@ const UsersList = (props) => {
         <TextField label="Номер" id="Uid" source="id" />
         <TextField label="Имя" source="name" />
         <TextField label="Класс" source="class" />
-        <TextField label="Буква" source="class_letter" />
-        <EditButton label="Изменить" basePath="/users" />
-
-        <DeleteButton
-          label="Удалить"
-          basePath="/users"
-          onClick={DeleteRequest}
-        />
       </Datagrid>
     </List>
   );
 };
 
-export default UsersList;
+export default AddResultList;

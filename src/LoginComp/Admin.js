@@ -6,8 +6,10 @@ import PostCreate from "./PostCreate";
 import PostEdit from "./PostEdit";
 import Login from "../Pages/Login";
 import { stringify } from "query-string";
-
-
+import AddResultList from './AddResultList'
+import AddResult from './AddResult'
+import AddAdmin from "./AddAdmin";
+import AddAdminList from './AddAdminList'
 //Button components -------------------------------------------------
 
 
@@ -30,7 +32,7 @@ const apiUrl =
         filter: JSON.stringify(params.filter),
         
       };
-      const url = `${apiUrl}/users_sum?sort=['title','ASC']&range=[0, 24]&filter={title:'bar'}/${resource}?${stringify(query)}`;
+      const url = `${apiUrl}/sum?sort=['title','ASC']&range=[0, 24]&filter={title:'bar'}/${resource}?${stringify(query)}`;
 
       return httpClient(url).then(({ headers, json }) => ({
         data: json.users.slice((page-1) * 40, page * 40).map((record) => ({ id: record.id, ...record })),
@@ -68,22 +70,20 @@ const AdminPage = (props) => {
   return (
     <Admin dataProvider={myDataProvider}  loginPage={Login}>
       <Resource
-        name="День 1"
+        name="users"
         list={UsersList}
         create={PostCreate}
         edit={PostEdit}
       />
       <Resource
-        name="День 2"
-        list={UsersList}
-        create={PostCreate}
-        edit={PostEdit}
+        name="Результаты"
+        list={AddResultList}
+        create={AddResult}
       />
       <Resource
-        name="День 3"
-        list={UsersList}
-        create={PostCreate}
-        edit={PostEdit}
+        name="Админы"
+        list={AddAdminList}
+        create={AddAdmin}
       />
       
     </Admin>
