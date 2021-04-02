@@ -10,6 +10,8 @@ import AddResultList from './AddResultList'
 import AddResult from './AddResult'
 import AddAdmin from "./AddAdmin";
 import AddAdminList from './AddAdminList'
+import authProvider from "./Authorizarion/mainAuth.jsx";
+
 //Button components -------------------------------------------------
 
 
@@ -50,25 +52,26 @@ const apiUrl =
       console.log(e)
       return Promise.reject()
     })},
-    getMany:    (resource, params) => Promise,
-    getManyReference: (resource, params) => Promise,
-    create:     (resource, params) => Promise,
+    getMany:    (resource, params) => {return Promise.reject();},
+    getManyReference: (resource, params) => {return Promise.resolve();},
+    create:     (resource, params) => {return Promise.resolve();},
     update:     (resource, params) => {if (resource !== 'posts' || !params.data.pictures) {
       return restProvider.update(resource, params);
   }},
-    updateMany: (resource, params) => Promise,
+    updateMany: (resource, params) => {return Promise.resolve();},
     delete:     (resource, params) => { return httpClient(`${apiUrl}/delete_user`).then()
     .catch((e) =>{
       console.log(e)
       return Promise.reject()
     })},
-    deleteMany: (resource, params) => Promise,
+    deleteMany: (resource, params) => {return Promise.resolve();},
   };
 
 const AdminPage = (props) => {
   
   return (
-    <Admin dataProvider={myDataProvider}  loginPage={Login}>
+    <Admin dataProvider={myDataProvider} authProvider={authProvider} loginPage={Login}>
+
       <Resource
         name="users"
         list={UsersList}

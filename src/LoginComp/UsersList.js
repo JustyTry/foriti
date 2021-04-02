@@ -37,7 +37,7 @@ const DeleteRequest = (gets) => {
     let textid = hek.textContent;
     var data = JSON.stringify({
 
-      "id":parseInt(textid),
+      "id":parseInt(textid) + a,
     });
     console.log(data);
     xhr.send(data);
@@ -48,35 +48,40 @@ const DeleteRequest = (gets) => {
 
 const PostFilter = (props) => (
   <Filter {...props}>
-    <TextInput label="Искать" source="id" alwaysOn />
+    <TextInput label="Искать" source="q" alwaysOn />
     <ReferenceInput label="User" source="name" reference="users" allowEmpty>
-      <SelectInput optionText="id" />
+      <SelectInput optionText="class_letter" />
     </ReferenceInput>
   </Filter>
 );
-
-
+var a = 0
+const plusme = () =>{
+    a = a + 1
+}
 const UsersList = (props) => {
-    
 
   return (
+      
     <List
       filters={<PostFilter />}
       title="Список участников"
-      
+      filterDefaultValues={{ name: true }}
       exporter={false}
       {...props}
     >
+       
       <Datagrid>
+      
         <TextField label="Номер" id="Uid" source="id" />
         <TextField label="Имя" source="name" />
         <TextField label="Класс" source="class" />
         <TextField label="Буква" source="class_letter" />
         <EditButton label="Изменить" basePath="/users" />
-
+        
         <DeleteButton
           label="Удалить"
           basePath="/users"
+          
           onClick={DeleteRequest}
         />
       </Datagrid>

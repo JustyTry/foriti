@@ -34,6 +34,8 @@ const CreateRequest = (props) => {
 };
 
 const AddResult = (props) => {
+    const subjValue = JSON.parse(localStorage.getItem('auth'))
+    const subjet = subjValue.speciality
   return (
     <SaveContextProvider>
       <Create {...props} title="Добавить участника">
@@ -42,7 +44,7 @@ const AddResult = (props) => {
           <RadioButtonGroupInput
             className="subject"
             source="category"
-            choices={[{ id: "maths", name: "Математика" }]}
+            choices={[{ id: "maths", name: subjet }]}
           />
           <TextInput id="scores" source='score' label="Баллы" />
         </SimpleForm>

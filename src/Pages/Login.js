@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import "./login.css";
 import { useHistory } from "react-router-dom";
 import Auth from "../LoginComp/Auth";
-import Cookies from "js-cookie";
+import authProvider from "../LoginComp/Authorizarion/mainAuth";
 
 const Login = (props) => {
 
@@ -21,27 +21,32 @@ const Login = (props) => {
           <input type="password" name required id="pass" />
           <label>Пароль</label>
         </div>
-        <button
+        <a href='#'
           onClick={() => {
-            let el1 = document.getElementById("log").value;
+            
+            (async() => {
+              let el1 = document.getElementById("log").value;
             let el2 = document.getElementById("pass").value;
+              const result = await authProvider.login( el1, el2 );
+              var a = result;
             
-            if (el1 === "user" && el2 === "user") {
-                
-            
+            if (a !== 0){
+
               if (history !== "undefiend")
                 Auth.login(() => {
                   history.push("/admin");
                 });
             }
+          })();
           }}
+          
         >
           <span />
           <span />
           <span />
           <span />
           Войти
-        </button>
+        </a>
       </form>
     </div>
   );

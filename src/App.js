@@ -33,7 +33,6 @@ function App() {
         </Route>
         <Route exact path='/top'>
           <Navbar/>
-          <ThirdPage/>
         </Route>
         <Route exact path='/log'>
           <Login/>

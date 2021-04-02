@@ -22,7 +22,7 @@ export default function FirstPage() {
   const [loading, setLoading] = useState(true);
   
   const fetchtodo = async () =>
-    fetch(`http://localhost:5000/users_sum`)
+    fetch(`http://localhost:5000/sum`)
       .then((response) => response.json())
       .then((json) => {
         settodo(json);

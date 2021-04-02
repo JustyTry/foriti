@@ -7,7 +7,7 @@ import {
   RadioButtonGroupInput,
   SaveContextProvider,
 } from "react-admin";
-//add_user
+
 var xhr = new XMLHttpRequest();
 
 const CreateRequest = (props) => {
