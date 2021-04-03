@@ -48,14 +48,7 @@ export const NavLink = styled(Link)`
 export const Bars = styled(FaBars)`
   display: none;
   color: #fff;
-  @media screen and (max-width: 768px) {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 75%);
-    font-size: 1.8rem;
-    cursor: pointer;
+ 
   }
 `;
 
@@ -68,18 +61,7 @@ export const NavMenu = styled.div`
   /* Third Nav */
   /* width: 100vw;
   white-space: nowrap; */
-  @media screen and (max-width: 768px) {
-    display: block;
-    text-align: center;
-    left: -100%;
-    position: fixed;
-    transition: all .5s;
-    width: 100%;
-    top: 80px;
-    height: 100vh;
-    background-color: #00000f;
-    
-  }
+  
 `;
 
 

@@ -50,6 +50,7 @@ export default function FirstPage() {
     fetchtodo(todo);
     return 0
   }, []);
+  console.log(todo)
  
   const [searchTerm, setSearchTerm] = useState('')
   
@@ -99,7 +100,7 @@ export default function FirstPage() {
               <TableCell align="left">{row.class}</TableCell>
               <TableCell align="left">{row.class_letter}</TableCell>
               <TableCell align="left">{row.result}</TableCell>
-              <TableCell align="left"><a href={`http://localhost:3000/get_user/${row.id}`}>Подробнее</a></TableCell>
+              <TableCell align="left"><a href={`http://localhost:3000/userinfo/${row.id}`}>Подробнее</a></TableCell>
               </TableRow>
             ))}
           </TableBody>

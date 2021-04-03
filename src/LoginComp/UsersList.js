@@ -65,6 +65,7 @@ const UsersList = (props) => {
       filters={<PostFilter />}
       title="Список участников"
       exporter={false}
+      bulkActionButtons={false}
       {...props}
     >
        

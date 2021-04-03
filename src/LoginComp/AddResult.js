@@ -42,7 +42,7 @@ const AddResult = (props) => {
     <SaveContextProvider>
       <Create {...props} title="Добавить участника">
         <SimpleForm redirect="/admin" save={CreateRequest}>
-          <TextInput id="id" source="id" />
+          <TextInput id="id" source="id" label='Номер'/>
           <TextField
           id="subject"
           label="Предмет"
