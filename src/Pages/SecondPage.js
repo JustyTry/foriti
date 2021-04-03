@@ -17,6 +17,23 @@ const useStyles = makeStyles({
 });
 
 export default function SecondPage() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", `http://localhost:5000/change_day`, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  try {
+    var data = JSON.stringify({
+      "new_day": 1,
+    });
+    console.log(data)
+    xhr.send(data);
+    
+  } catch (e) {
+     
+        console.log(e);
+    }
+
+
+
   const classes = useStyles();
   const [todo, settodo] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +49,7 @@ export default function SecondPage() {
 
   useEffect(() => {
     fetchtodo(todo);
-  }, [todo]);
+  }, []);
 
   return (
     <>

@@ -17,13 +17,29 @@ const useStyles = makeStyles({
 });
 
 export default function FirstPage() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", `http://localhost:5000/change_day`, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  try {
+    var data = JSON.stringify({
+      "new_day": 0,
+    });
+    console.log(data)
+    xhr.send(data);
+    
+  } catch (e) {
+     
+        console.log(e);
+    }
+
   const classes = useStyles();
   const [todo, settodo] = useState([]);
   const [loading, setLoading] = useState(true);
   
   const fetchtodo = async () =>
+  
     fetch(`http://localhost:5000/sum`)
-      .then((response) => response.json())
+      .then((response) => response.json() )
       .then((json) => {
         settodo(json);
         setLoading(false);
@@ -32,7 +48,8 @@ export default function FirstPage() {
 
   useEffect(() => {
     fetchtodo(todo);
-  }, [todo]);
+    return 0
+  }, []);
  
   const [searchTerm, setSearchTerm] = useState('')
   
@@ -63,8 +80,7 @@ export default function FirstPage() {
               <TableCell align="left">Имя</TableCell>
               <TableCell align="left">Класс</TableCell>
               <TableCell align="left">Буква</TableCell>
-              <TableCell align="left">Предметы</TableCell>
-              <TableCell align="left">Чистые баллы</TableCell>
+              <TableCell align="left">Баллы</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -82,8 +98,8 @@ export default function FirstPage() {
               <TableCell align="left">{row.name}</TableCell>
               <TableCell align="left">{row.class}</TableCell>
               <TableCell align="left">{row.class_letter}</TableCell>
-              <TableCell align="left">{row.days}</TableCell>
               <TableCell align="left">{row.result}</TableCell>
+              <TableCell align="left"><a href={`http://localhost:3000/get_user/${row.id}`}>Подробнее</a></TableCell>
               </TableRow>
             ))}
           </TableBody>

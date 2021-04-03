@@ -16,6 +16,7 @@
     "json-server": "^0.16.3",
     "jwt-decode": "^3.1.2",
     "ra-data-simple-rest": "^3.10.4",
+    "ra-language-russian": "^3.13.5",
     "react": "^17.0.1",
     "react-admin": "^3.13.3",
     "react-dom": "^17.0.1",

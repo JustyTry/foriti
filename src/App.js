@@ -4,7 +4,6 @@ import Navbar from './components/Navbar';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import FirstPage from './Pages/FirstPage';
 import SecondPage from './Pages/SecondPage';
-import ThirdPage from './Pages/ThirdPage';
 import Login from './Pages/Login'
 import AdminPage from './LoginComp/Admin';
 import { ProtectedRoute } from './LoginComp/ProtectedRoute';

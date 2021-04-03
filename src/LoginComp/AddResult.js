@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import React from "react";
 import {
   Create,
@@ -20,10 +20,12 @@ const CreateRequest = (props) => {
   xhr.onreadystatechange = function () {};
   try {
     
-    let getLettr = document.getElementById("scores").value;
+    let getScores = document.getElementById("scores").value;
+    let getSubj = document.getElementById('subject').value
+    
     var data = JSON.stringify({
-      subject: 'математика',
-      score: parseInt(getLettr)
+      subject: getSubj,
+      score: parseInt(getScores)
       
     });
     console.log(data);
@@ -41,11 +43,14 @@ const AddResult = (props) => {
       <Create {...props} title="Добавить участника">
         <SimpleForm redirect="/admin" save={CreateRequest}>
           <TextInput id="id" source="id" />
-          <RadioButtonGroupInput
-            className="subject"
-            source="category"
-            choices={[{ id: "maths", name: subjet }]}
-          />
+          <TextField
+          id="subject"
+          label="Предмет"
+          defaultValue={subjet}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
           <TextInput id="scores" source='score' label="Баллы" />
         </SimpleForm>
       </Create>

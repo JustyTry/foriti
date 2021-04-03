@@ -34,8 +34,7 @@ const authProvider = {
         return localStorage.getItem('auth') ? Promise.resolve() : Promise.reject();
     },
     logout: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('permissions');
+        localStorage.removeItem('auth');
         return Promise.resolve();
     },
     getIdentity:() => {

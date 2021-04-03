@@ -13,52 +13,30 @@ import AddAdminList from './AddAdminList'
 import authProvider from "./Authorizarion/mainAuth.jsx";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuItem from '@material-ui/core/MenuItem';
-import polyglotI18nProvider from 'ra-i18n-polyglot';
-import russianMessages from 'ra-language-russian';
-//Button components -------------------------------------------------
-const MyLogoutButton = props => {
-  
-  const handleClick = () => authProvider.logout();
-  return (
-      <MenuItem
-          onClick={() => {
-            handleClick()
-            document.location.href = 'http://localhost:3000'
-          }}
-         
-      >
-          <ExitToAppIcon /> Выйти
-      </MenuItem>
-  )
-}
-
-
-//API components ---------------------------------------------------
 const apiUrl =
     "http://localhost:5000";
-  const httpClient = fetchUtils.fetchJson;
-  
+ 
+    const httpClient = fetchUtils.fetchJson;
   const myDataProvider = {
     
     ...restProvider,
     getList: (resource, params) => {
       const { page, perPage } = params.pagination;
-      
       const { field, order } = params.sort;
       const query = {
-        
         sort: JSON.stringify([field, order]),
         range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
         filter: JSON.stringify(params.filter),
-        
-      };
-      
-      const url = `${apiUrl}/sum?sort=['title','ASC']&range=[0, 24]&filter={title:'bar'}/${resource}?${stringify(query)}`;
+    };
+    const httpClient = fetchUtils.fetchJson;
+      const apiUrl =
+    "http://localhost:5000";
+      const url = `http://localhost:5000/${resource}`;
 
       return httpClient(url).then(({ headers, json }) => ({
-        data: json.users.slice((page-1) * 40, page * 40).map((record) => ({ id: record.id, ...record })),
+        data: json.users.map((record) => ({ id: record.id, ...record })),
 
-        total: parseInt(json.users.length / perPage , 20),
+        total:parseInt(10, 20),
         
       }));
       
@@ -86,31 +64,4 @@ const apiUrl =
     deleteMany: (resource, params) => {return Promise.resolve();},
   };
 
-const AdminPage = (props) => {
-  
-  const i18nProvider = polyglotI18nProvider(() => russianMessages, 'ru');
-  return (
-    <Admin i18nProvider={i18nProvider} dataProvider={myDataProvider} logoutButton={MyLogoutButton} authProvider={authProvider} loginPage={Login}>
-
-      <Resource
-        name="users"
-        list={UsersList}
-        create={PostCreate}
-        edit={PostEdit}
-      />
-      <Resource
-        name="Результаты"
-        list={AddResultList}
-        create={AddResult}
-      />
-      <Resource
-        name="Админы"
-        list={AddAdminList}
-        create={AddAdmin}
-      />
-      
-    </Admin>
-  );
-};
-
-export default AdminPage;
+  export default myDataProvider

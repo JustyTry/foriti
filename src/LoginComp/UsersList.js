@@ -13,6 +13,7 @@ import {
 } from "react-admin";
 import PostBulkActionButtons from './PostCreate'
 import simpleRestProvider from "ra-data-simple-rest";
+import myDataProvider from './Admin'
 ////////////////////////////////////////
 const ListActions = (props) => (
     <>
@@ -37,7 +38,7 @@ const DeleteRequest = (gets) => {
     let textid = hek.textContent;
     var data = JSON.stringify({
 
-      "id":parseInt(textid) + a,
+      "id":parseInt(textid),
     });
     console.log(data);
     xhr.send(data);
@@ -45,6 +46,7 @@ const DeleteRequest = (gets) => {
     console.log(e);
   }
 };
+
 
 const PostFilter = (props) => (
   <Filter {...props}>
@@ -54,10 +56,7 @@ const PostFilter = (props) => (
     </ReferenceInput>
   </Filter>
 );
-var a = 0
-const plusme = () =>{
-    a = a + 1
-}
+
 const UsersList = (props) => {
 
   return (
@@ -65,7 +64,6 @@ const UsersList = (props) => {
     <List
       filters={<PostFilter />}
       title="Список участников"
-      filterDefaultValues={{ name: true }}
       exporter={false}
       {...props}
     >

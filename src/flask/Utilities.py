@@ -3,6 +3,7 @@ import json
 import os
 
 from openpyxl import Workbook
+from random import shuffle
 
 
 class SubjectIsAlreadyExists(Exception):
@@ -47,9 +48,6 @@ class JsonDB(dict):
             return self.get(item)
         else:
             raise KeyError("Такого ключа не существует")
-
-    def __setitem__(self, key, value):
-        self[key] = value
 
     def __str__(self):
         return self
@@ -126,6 +124,7 @@ class Day(JsonDB):
         for i in range(len(self["users"])):
             if id == self["users"][i]["id"]:
                 return self["users"][i]
+        raise KeyError("Такого ключа не существует!")
 
     def find_item_with_class(self, class_dig: int) -> list:
         if class_dig not in range(5, 10):
@@ -159,7 +158,10 @@ class Day(JsonDB):
         for user_id in self.get_ids:
             temp = self.get_item_with_id(user_id)
             temp_results[user_id] = {"class": temp["class"]}
-            temp_days = temp["days"][self.day]
+            try:
+                temp_days = temp["days"][self.day].copy()
+            except IndexError:
+                temp_days = {}
             for result in temp_days.keys():
                 temp_results[user_id][result] = temp_days[result][0]
         return temp_results
@@ -175,21 +177,75 @@ class Day(JsonDB):
         return min(temp), max(temp) + 1
 
 
-def is_data_edited(student_id: int, name, stage, days: Day) -> bool:
-    ids = [i["id"] for i in days["users"]]
+class Config:
+    def __init__(self):
+        with open("site_config.json", encoding="utf8") as config:
+            self.config = json.load(config)
+
+    @property
+    def day(self) -> int:
+        try:
+            return self.config["day"]
+        except Exception as ex:
+            print(ex)
+
+    @property
+    def current_subjects(self) -> str:
+        try:
+            return self.config["current_subjects"]
+        except Exception as ex:
+            print(ex)
+
+    @property
+    def current_students(self) -> str:
+        try:
+            return self.config["current_students"]
+        except Exception as ex:
+            print(ex)
+
+    @property
+    def current_admins(self) -> str:
+        try:
+            return self.config["current_admins"]
+        except Exception as ex:
+            print(ex)
+
+    @property
+    def configs(self) -> tuple:
+        try:
+            return self.day, self.current_subjects, self.current_students, self.current_admins
+        except Exception as ex:
+            print(ex)
+
+    def set_configs(self, **kwargs):
+        for key, value in kwargs.items():
+            if key in self.config.keys():
+                self.config[key] = value
+            else:
+                raise KeyError("Такого ключа не существует!")
+        self.commit()
+
+    def commit(self):
+        with open("site_config.json", "w") as file:
+            json.dump(self.config, file, ensure_ascii=False)
+
+
+def is_data_edited(name: str, days: Day) -> bool:
+    """Проверяет, есть ли такой человек в бд."""
+    # ids = [i["id"] for i in days["users"]]
     for i in days["users"]:
-        if (student_id == i["id"] and (name != i["name"] or stage != i["class"])) or student_id not in ids:
+        if name == i["name"]:
             return True
     return False
 
 
 def json_from_xlsx(file: Workbook, days: Day):
     wb = file.active
+    student_i = list(range(1000, 50000))
+    shuffle(student_i)
     for i in list(wb.rows)[1::]:
         student_id, name, stage, *rubbish = [k.value for k in i]
-        if not is_data_edited(student_id, name, stage, days):
-            continue
-        if not name:
+        if not name or is_data_edited(name, days):
             continue
         try:
             class_digit = stage[:-1]
@@ -198,7 +254,7 @@ def json_from_xlsx(file: Workbook, days: Day):
             class_digit = stage
             class_letter = ""
         days["users"].append({
-            "id": i,
+            "id": student_i[i],
             "name": name,
             "class": int(class_digit),
             "class_letter": class_letter,
@@ -224,7 +280,6 @@ def recount(day: Day, all_subjects: JsonDB) -> dict:
     for subject in all_subjects.keys():
         for class_digit in range(*day.classes_count):
             subject_result = all_subject_results(day.results, subject, class_digit)
-            print(subject_result)
             if subject_result:
                 user_id, max_result = max(subject_result.items(), key=lambda x: x[1])
                 if max_result > all_subjects[subject][1] / 2:
@@ -232,8 +287,8 @@ def recount(day: Day, all_subjects: JsonDB) -> dict:
                 else:
                     percent = all_subjects[subject][1] / 200
                 for i, val in subject_result.items():
-                    day.get_item_with_id(user_id)["days"][day.day][subject][1] = round(val / percent, 1)
-                day.commit()
+                    day.get_item_with_id(i)["days"][day.day][subject][1] = round(val / percent, 1)
+    day.commit()
     return {"verdict": "ok"}
 
 
@@ -242,8 +297,14 @@ def sorting(day: Day):
     day.commit()
 
 
+def get_subject_result(student: dict, subject: str) -> float:
+    for i in student["days"]:
+        if subject in i.keys():
+            return i[subject]
+    raise KeyError("Такого ключа не существует!")
+
+
 if __name__ == '__main__':
-    subjects_test = JsonDB("subjects.json")
-    d_test = Day("test.json", subjects_test)
-    recount(d_test, subjects_test)
-    print(d_test.results)
+    subjects = JsonDB("subjects.json")
+    d = Day("test1.json", subjects)
+    print(d.get_item_with_id(899))

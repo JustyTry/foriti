@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React from "react";
 import "./login.css";
 import { useHistory } from "react-router-dom";
 import Auth from "../LoginComp/Auth";
@@ -7,10 +7,18 @@ import authProvider from "../LoginComp/Authorizarion/mainAuth";
 const Login = (props) => {
 
   let history = useHistory();
-
+  const a =JSON.parse(localStorage.getItem('auth'))
+  if (a !== null){
+  if (a.access === 1){
+                Auth.login(() => {
+                  history.push("/admin");
+                });
+  }}
 
   return (
+    
     <div className="login-box">
+      
       <h2>Вход</h2>
       <form>
         <div className="user-box">
