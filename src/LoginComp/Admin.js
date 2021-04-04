@@ -65,7 +65,6 @@ const apiUrl =
     },
     
     getOne:     (resource, params) => { return httpClient(`${apiUrl}/users`).then(
-      console.log('nath')
       
     ).catch((e) =>{
       console.log(e)
@@ -87,29 +86,35 @@ const apiUrl =
   };
 
 const AdminPage = (props) => {
-  
   const i18nProvider = polyglotI18nProvider(() => russianMessages, 'ru');
+  const Role = JSON.parse(localStorage.getItem('auth')).speciality
   return (
+    
     <Admin i18nProvider={i18nProvider} dataProvider={myDataProvider} logoutButton={MyLogoutButton} authProvider={authProvider} loginPage={Login}>
-
-      <Resource
+    {Role === 'MainAdmin' ?  (
+     <Resource
         name="users"
         list={UsersList}
         create={PostCreate}
         edit={PostEdit}
       />
-      <Resource
-        name="Результаты"
-        list={AddResultList}
-        create={AddResult}
-      />
+  ): <div></div>}
+  {Role === 'MainAdmin' ?  (
       <Resource
         name="Админы"
         list={AddAdminList}
         create={AddAdmin}
       />
+      ): <div></div>}
+    
+      <Resource
+      name="Результаты"
+      list={AddResultList}
+      create={AddResult}
+    />
       
     </Admin>
+    
   );
 };
 

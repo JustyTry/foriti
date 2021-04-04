@@ -12,12 +12,13 @@ import UserInfo from './Pages/InfoPage'
 
 
 function App() {
+  
   return (
     
     <Router>
       
-      <Switch>
-      <ProtectedRoute path='/admin' component={AdminPage}/>
+      <Switch> 
+      <ProtectedRoute path='/admin' component={AdminPage}/> 
         <Route exact path='/'>
           <Navbar/>
           <FirstPage/>
@@ -26,10 +27,10 @@ function App() {
           <Navbar />
           <FirstPage/>
         </Route>
-        <Route exact path='/second'>
+        {/* <Route exact path='/second'>
           <Navbar/>
           <SecondPage/>
-        </Route>
+        </Route> */}
         <Route exact path='/top'>
           <Navbar/>
         </Route>

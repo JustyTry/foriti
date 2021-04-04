@@ -22,7 +22,6 @@ const EditRequest = (props) => {
       "class_letter": getLettr,
       "days": []
     });
-    console.log(data)
     xhr.send(data);
   } catch (e) {
      

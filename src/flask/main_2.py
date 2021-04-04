@@ -64,7 +64,11 @@ def users_per_day(day):
 @app.route("/get_user/<int:user_id>")
 def get_user(user_id):
     try:
-        return {"data": d.get_item_with_id(user_id)}
+        user = d.get_item_with_id(user_id).copy()
+        temp_result = [{"subject": key, "value": value[1]} for day in user["days"] for key, value in day.items()]
+        user["results"] = temp_result
+        user.pop("days")
+        return {"data": user}
     except Exception as ex:
         print(ex)
         return {"error": "Такого пользователя не существует"}, 404
@@ -127,10 +131,14 @@ def add_result(user_id):
     """
     # Пример запроса в файле add_result.json
     data = request.get_json()
-    student = d.get_item_with_id(user_id)
-    if subjects[data["subject"]][2] == student["class"]:
-        return d.add_result(user_id, data["subject"], data["score"])
-    return {"error": "Этот пользователь не может писать этот предмет"}, 400
+    try:
+        student = d.get_item_with_id(user_id)
+        if student["class"] in subjects[data["subject"]][2]:
+            return d.add_result(user_id, data["subject"], data["score"])
+        return {"error": "Этот пользователь не может писать этот предмет"}, 400
+    except Exception as ex:
+        print(ex)
+        return {"error": str(ex)}, 400
 
 
 @app.route("/test_for_correct", methods=["POST"])
@@ -213,9 +221,9 @@ def add_subject():
 
 @app.route("/users/betters/<class_dig>")
 def betters_students_from_class(class_dig):
-    if class_dig not in range(5, 10) and not isinstance(class_dig, int):
+    if class_dig not in range(*d.classes_count) and not isinstance(class_dig, int):
         return {"error": "BadRequest"}, 400
-    all_this_class_students = d.find_item_with_class(class_dig)
+    all_this_class_students = d.get_items_with_class(class_dig)
     return {"data": sorted(all_this_class_students, key=lambda x: student_sum(x))}, 200
 
 
@@ -260,7 +268,6 @@ def betters_student_from_subject_n_class(subject, class_d):
 @app.route("/admins")
 def get_admins():
     return jsonify(admins), 200
-
 
 
 if __name__ == '__main__':

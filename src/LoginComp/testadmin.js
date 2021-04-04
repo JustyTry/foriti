@@ -1,18 +1,6 @@
-import React from "react";
-import { Admin, Resource, fetchUtils} from "react-admin";
+
+import {fetchUtils} from "react-admin";
 import restProvider from "ra-data-simple-rest";
-import UsersList from "./UsersList";
-import PostCreate from "./PostCreate";
-import PostEdit from "./PostEdit";
-import Login from "../Pages/Login";
-import { stringify } from "query-string";
-import AddResultList from './AddResultList'
-import AddResult from './AddResult'
-import AddAdmin from "./AddAdmin";
-import AddAdminList from './AddAdminList'
-import authProvider from "./Authorizarion/mainAuth.jsx";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import MenuItem from '@material-ui/core/MenuItem';
 const apiUrl =
     "http://localhost:5000";
  
@@ -43,7 +31,6 @@ const apiUrl =
     },
     
     getOne:     (resource, params) => { return httpClient(`${apiUrl}/users`).then(
-      console.log('nath')
       
     ).catch((e) =>{
       console.log(e)

@@ -8,29 +8,30 @@ import {
   ReferenceInput,
   SelectInput,
   TextInput,
-  TopToolbar,SortButton,CreateButton
+  TopToolbar,
+  CreateButton,
 } from "react-admin";
 
 ////////////////////////////////////////
 const ListActions = (props) => (
-  
   <TopToolbar>
-  <CreateButton basePath="/Результаты" />
-  <Button onClick={async() => fetch('http://localhost:5000/recount',{
-    method: 'GET'
-  })}>Пересчёт баллов</Button>
-</TopToolbar>
-    
+    <CreateButton basePath="/Результаты" />
+    <Button
+      onClick={async () =>
+        fetch("http://localhost:5000/recount", {
+          method: "GET",
+        })
+      }
+    >
+      Пересчёт баллов
+    </Button>
+  </TopToolbar>
 );
 
 ////////////////////////////////////
-const CutonAction = (props) =>{
-  return (
-      <TopToolbar {...props}>
-      
-  </TopToolbar>
-  );
-}
+const CutonAction = (props) => {
+  return <TopToolbar {...props}></TopToolbar>;
+};
 
 const PostFilter = (props) => (
   <Filter {...props}>
@@ -43,24 +44,20 @@ const PostFilter = (props) => (
 
 const AddResultList = (props) => {
   return (
-    
-    
     <List
       filters={<PostFilter />}
       title="Список участников"
       bulkActionButtons={false}
       exporter={false}
-      actions={<ListActions/>}
+      actions={<ListActions />}
       {...props}
     >
-
       <Datagrid>
         <TextField label="Номер" id="Uid" source="id" />
         <TextField label="Имя" source="name" />
         <TextField label="Класс" source="class" />
       </Datagrid>
     </List>
-    
   );
 };
 

@@ -126,7 +126,7 @@ class Day(JsonDB):
                 return self["users"][i]
         raise KeyError("Такого ключа не существует!")
 
-    def find_item_with_class(self, class_dig: int) -> list:
+    def get_items_with_class(self, class_dig: int) -> list:
         if class_dig not in range(5, 10):
             raise IndexError(f"Class digit must be in range(5, 10), not {class_dig}")
         return list(filter(lambda x: x["class"] == class_dig, self["users"]))
@@ -277,8 +277,9 @@ def student_sum(student: dict) -> int:
 
 
 def recount(day: Day, all_subjects: JsonDB) -> dict:
+    classes = day.classes_count
     for subject in all_subjects.keys():
-        for class_digit in range(*day.classes_count):
+        for class_digit in range(*classes):
             subject_result = all_subject_results(day.results, subject, class_digit)
             if subject_result:
                 user_id, max_result = max(subject_result.items(), key=lambda x: x[1])

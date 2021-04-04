@@ -9,19 +9,19 @@ import {
   ReferenceInput,
   SelectInput,
   TextInput,
-  Pagination,TopToolbar,SortButton,CreateButton,ExportButton
+  TopToolbar,
+  SortButton,
+  CreateButton,
 } from "react-admin";
-import PostBulkActionButtons from './PostCreate'
 import simpleRestProvider from "ra-data-simple-rest";
-import myDataProvider from './Admin'
 ////////////////////////////////////////
 const ListActions = (props) => (
-    <>
+  <>
     <TopToolbar>
-        <SortButton label='Параметры' {...props}/>
-        <CreateButton label='Добавить участника' {...props}/>
+      <SortButton label="Параметры" {...props} />
+      <CreateButton label="Добавить участника" {...props} />
     </TopToolbar>
-    </>
+  </>
 );
 
 ////////////////////////////////////
@@ -37,16 +37,13 @@ const DeleteRequest = (gets) => {
     let hek = document.querySelector("#Uid");
     let textid = hek.textContent;
     var data = JSON.stringify({
-
-      "id":parseInt(textid),
+      id: parseInt(textid),
     });
-    console.log(data);
     xhr.send(data);
   } catch (e) {
     console.log(e);
   }
 };
-
 
 const PostFilter = (props) => (
   <Filter {...props}>
@@ -58,9 +55,7 @@ const PostFilter = (props) => (
 );
 
 const UsersList = (props) => {
-
   return (
-      
     <List
       filters={<PostFilter />}
       title="Список участников"
@@ -68,19 +63,16 @@ const UsersList = (props) => {
       bulkActionButtons={false}
       {...props}
     >
-       
       <Datagrid>
-      
         <TextField label="Номер" id="Uid" source="id" />
         <TextField label="Имя" source="name" />
         <TextField label="Класс" source="class" />
         <TextField label="Буква" source="class_letter" />
         <EditButton label="Изменить" basePath="/users" />
-        
+
         <DeleteButton
           label="Удалить"
           basePath="/users"
-          
           onClick={DeleteRequest}
         />
       </Datagrid>

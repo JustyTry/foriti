@@ -1,1 +1,22 @@
-{"data": [{"login": "artmexbet", "password": "assas", "name": "Артём", "subject": "Physics"}, {"login": "JustyTry", "password": "assWeCan", "name": "Саша", "subject": "Cringology"}, {"login": "Блок", "password": "Cancer", "name": "Артизи", "subject": "физика"}, {"login": "ASFFAS", "password": "fAWFAS", "name": "AFSFSA", "subject": null}, {"login": "ASFFAS", "password": "fAWFAS", "name": "AFSFSA", "subject": null}, {"login": "", "password": "", "name": ""}, {"login": "", "password": "", "name": ""}, {"login": "s", "password": "s", "name": "s"}, {"login": "s", "password": "s", "name": "s", "subject": "русский"}]}
+{
+    "data": [
+      {
+        "login": "artmexbet",
+        "password": "zxcvasdf",
+        "name": "Артём",
+        "subject": "русский"
+      },
+      {
+        "login": "JustyTry",
+        "password": "asWeCan",
+        "name": "Саша",
+        "subject": "MainAdmin"
+      },
+      {
+        "login": "MainAdmin",
+        "password": "HsdkOrsfS",
+        "name": "ЗавУч",
+        "subject": "MainAdmin"
+      }
+    ]
+  }

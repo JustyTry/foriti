@@ -24,7 +24,6 @@ export default function SecondPage() {
     var data = JSON.stringify({
       "new_day": 1,
     });
-    console.log(data)
     xhr.send(data);
     
   } catch (e) {

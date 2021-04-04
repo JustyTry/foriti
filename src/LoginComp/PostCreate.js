@@ -5,7 +5,7 @@ import {
   SimpleForm,
   TextInput,
   RadioButtonGroupInput,
-  SaveContextProvider
+  SaveContextProvider,
 } from "react-admin";
 //add_user
 var xhr = new XMLHttpRequest();
@@ -14,20 +14,17 @@ var url = "http://localhost:5000/add_user";
 const CreateRequest = (props) => {
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onreadystatechange = function () {
-  };
+  xhr.onreadystatechange = function () {};
   try {
     let getName = document.getElementById("name").value;
     let getClass = document.getElementById("class").value;
     let getLettr = document.getElementById("class_letter").value;
     var data = JSON.stringify({
-      
-      "name": getName,
-      "class": getClass,
-      "class_letter": getLettr,
-      "days": []
+      name: getName,
+      class: getClass,
+      class_letter: getLettr,
+      days: [],
     });
-    console.log(data)
     xhr.send(data);
   } catch (e) {
     console.log(e);
@@ -59,8 +56,5 @@ const PostCreate = (props) => {
     </SaveContextProvider>
   );
 };
-const PostBulkActionButtons = props => (
-      <Button label='Добавить' {...props}/>
-      
-);
+const PostBulkActionButtons = (props) => <Button label="Добавить" {...props} />;
 export default PostCreate;

@@ -24,11 +24,9 @@ export default function FirstPage() {
     var data = JSON.stringify({
       "new_day": 0,
     });
-    console.log(data)
     xhr.send(data);
     
   } catch (e) {
-     
         console.log(e);
     }
 
@@ -50,7 +48,6 @@ export default function FirstPage() {
     fetchtodo(todo);
     return 0
   }, []);
-  console.log(todo)
  
   const [searchTerm, setSearchTerm] = useState('')
   
@@ -67,7 +64,10 @@ export default function FirstPage() {
    
           
         <>
+        
         <input placeholder='Введите номер' type='text' onChange={(e) => setSearchTerm(e.target.value)}/>
+        
+        
         <TableContainer styles={Paper} className='page'>
         <Table
           className={classes.table}
@@ -88,7 +88,7 @@ export default function FirstPage() {
             {todo.users.filter((val) => {
               if(searchTerm === ''){
                 return val
-              }else if(val.name.toLowerCase().includes(searchTerm.toLowerCase())){
+              }else if(val.class.toString().toLowerCase().includes(searchTerm.toLowerCase())){
                 return val
               }
             }).map((row) => (
