@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify
 from Utilities import *
 from datetime import datetime
 from flask_cors import CORS, cross_origin
+from waitress import serve
+
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -22,7 +24,7 @@ def new_db(data: dict):  # по поводу этой штуки вообще н
 
 subjects = JsonDB(config.current_subjects)
 d = Day(config.current_students, subjects)
-d.set_day(config.day)
+d.set_day(new_day=config.day)
 admins = JsonDB(config.current_admins, {})
 
 
@@ -134,7 +136,7 @@ def add_result(user_id):
     try:
         student = d.get_item_with_id(user_id)
         if student["class"] in subjects[data["subject"]][2]:
-            return d.add_result(user_id, data["subject"], data["score"])
+            return d.add_result(user_id, data["subject"], data["score"], student)
         return {"error": "Этот пользователь не может писать этот предмет"}, 400
     except Exception as ex:
         print(ex)
@@ -223,8 +225,8 @@ def add_subject():
 def betters_students_from_class(class_dig):
     if class_dig not in range(*d.classes_count) and not isinstance(class_dig, int):
         return {"error": "BadRequest"}, 400
-    all_this_class_students = d.get_items_with_class(class_dig)
-    return {"data": sorted(all_this_class_students, key=lambda x: student_sum(x))}, 200
+    all_this_class_students = convert_to_betters(d.get_items_with_class(class_dig))
+    return {"data": sorted(all_this_class_students, key=lambda x: -sum(x["results"].values()))[:20]}, 200
 
 
 @app.route("/users/betters/<subject>")
@@ -232,7 +234,7 @@ def betters_student_from_subject(subject):
     if not isinstance(subject, str) and subject not in subjects.keys():
         return {"error": "BadRequest"}, 400
     all_this_subject_students = d.find_item_with_subjects(subject)
-    return {"data": sorted(all_this_subject_students, key=lambda x: get_subject_result(x, subject))}, 200
+    return {"data": sorted(all_this_subject_students, key=lambda x: -get_subject_result(x, subject))[:20]}, 200
 
 
 @app.route("/subjects")
@@ -254,7 +256,7 @@ def delete_user():
 @app.route("/change_day", methods=["PUT"])
 def change_day():
     new_day = request.get_json()["new_day"]
-    d.set_day(new_day)
+    d.set_day(new_day=new_day)
     config.set_configs(day=new_day)
     return {"verdict": "ok"}, 200
 
@@ -262,12 +264,23 @@ def change_day():
 @app.route("/users/betters/<subject>/<int:class_d>")
 def betters_student_from_subject_n_class(subject, class_d):
     return {"data": sorted(list(filter(lambda x: x["class"] == class_d, betters_student_from_subject(subject))),
-                           key=lambda x: get_subject_result(x, subject))}, 200
+                           key=lambda x: -get_subject_result(x, subject))[:20]}, 200
+
+
+@app.route("/users/betters")
+def betters():
+    return {"data": sorted(convert_to_betters(d["users"])[:20], key=lambda x: -sum(x["results"].values()))}
 
 
 @app.route("/admins")
 def get_admins():
     return jsonify(admins), 200
+
+
+@app.route("/users/betters/teams")
+def better_teams():
+    return {"data": d.count_teams}
+
 
 
 if __name__ == '__main__':

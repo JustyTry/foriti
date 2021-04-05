@@ -36,20 +36,17 @@ const PostCreate = (props) => {
     <SaveContextProvider>
       <Create {...props} title="Добавить участника">
         <SimpleForm redirect="/admin" save={CreateRequest}>
-          <TextInput id="name" source="uname" />
-          <TextInput id="class" source="class" />
+          <TextInput id="name" label='Имя' source="uname" />
+          <TextInput id="class" label='Класс' source="class" />
           <TextInput
             id="class_letter"
-            label="Published"
+            label="Буква"
             source="class_letter"
           />
-          <RadioButtonGroupInput
-            source="category"
-            choices={[
-              { id: "maths", name: "Programming" },
-              { id: "lifestyle", name: "Lifestyle" },
-              { id: "photography", name: "Photography" },
-            ]}
+         <TextInput
+            id="class_letter"
+            label="Команда"
+            source="class_letter"
           />
         </SimpleForm>
       </Create>

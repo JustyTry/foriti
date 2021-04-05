@@ -17,7 +17,8 @@ const useStyles = makeStyles({
 const UserInfo = () => {
     var hash = window.location.href.replace(window.location.hash, '');
     hash = hash.split("/")
-    hash = hash[hash.length - 1]
+    console.log(hash)
+    hash = parseInt(hash[4])
     const[todo, setTodo] = useState({data: {}})
     const[data, setData] = useState({users: []})
     const fetchtodo = async() => {
@@ -41,7 +42,7 @@ const UserInfo = () => {
     return(
         <>
         {todo.data.name}
-        {parseInt(hash) <= data.users.length && todo.data.results !== 'undefiend'?(
+        {parseInt(hash) - (hash - 1) <= data.users.length && todo.data.results !== 'undefiend'?(
             
          <TableContainer styles={Paper} className='page'>
         <Table

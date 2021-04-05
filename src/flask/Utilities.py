@@ -3,7 +3,7 @@ import json
 import os
 
 from openpyxl import Workbook
-from random import shuffle
+from copy import deepcopy
 
 
 class SubjectIsAlreadyExists(Exception):
@@ -86,7 +86,7 @@ class Day(JsonDB):
         self.subject_database = subjects_database
         self.day = 0
 
-    def add_result(self, student_id: int, subject: str, score: int):
+    def add_result(self, student_id: int, subject: str, score: int, student: dict):
         """
         Этот метод присваивает пользователю результат
         :param student_id: id студента
@@ -96,10 +96,7 @@ class Day(JsonDB):
         """
         if subject in self.subject_database.keys():
             if self.day == self.subject_database[subject][0] - 1:
-                try:
-                    self.get_item_with_id(student_id)['days'][self.day][subject] = [score, -1]
-                except IndexError:
-                    self.get_item_with_id(student_id)['days'].append({subject: [score, -1]})
+                student['days'][self.day][subject] = [score, -1]
                 self.commit()
                 return {"verdict": "ok"}, 200  # Всё прошло успешно
             else:
@@ -108,7 +105,7 @@ class Day(JsonDB):
             return {"verdict": "This subject doesn't exist"}, 400  # Такого предмета не существует
 
     def set_day(self, new_day=None):
-        if new_day:
+        if new_day is not None:
             self.day = new_day
         else:
             self.day += 1
@@ -158,12 +155,9 @@ class Day(JsonDB):
         for user_id in self.get_ids:
             temp = self.get_item_with_id(user_id)
             temp_results[user_id] = {"class": temp["class"]}
-            try:
-                temp_days = temp["days"][self.day].copy()
-            except IndexError:
-                temp_days = {}
-            for result in temp_days.keys():
-                temp_results[user_id][result] = temp_days[result][0]
+            temp_days = temp["days"][self.day].copy()
+            for subject in temp_days.keys():
+                temp_results[user_id][subject] = temp_days[subject][0]
         return temp_results
         # for index in range(len(self["users"])):
         #     temp_results[index] = {"class": self["users"][index]["class"]}
@@ -175,6 +169,19 @@ class Day(JsonDB):
     def classes_count(self) -> tuple:
         temp = {self["users"][index]["class"] for index in range(len(self["users"]))}
         return min(temp), max(temp) + 1
+
+    @property
+    def count_teams(self):
+        teams = {}
+        betters_users = convert_to_betters(self["users"])
+        for user in betters_users:
+            if user["team"]:
+                try:
+                    teams[user["team"]] += sum(user["results"].values())
+                except Exception as ex:
+                    print(ex)
+                    teams[user["team"]] = sum(user["results"].values())
+        return [{"team_name": key, "team_results": value} for key, value in sorted(teams.items(), key=lambda x: -x[1])]
 
 
 class Config:
@@ -241,8 +248,9 @@ def is_data_edited(name: str, days: Day) -> bool:
 
 def json_from_xlsx(file: Workbook, days: Day):
     wb = file.active
-    student_i = list(range(1000, 50000))
-    shuffle(student_i)
+    # student_i = list(range(1000, 50000))
+    # shuffle(student_i)
+    days["users"] = []
     for i in list(wb.rows)[1::]:
         student_id, name, stage, *rubbish = [k.value for k in i]
         if not name or is_data_edited(name, days):
@@ -254,11 +262,12 @@ def json_from_xlsx(file: Workbook, days: Day):
             class_digit = stage
             class_letter = ""
         days["users"].append({
-            "id": student_i[i],
+            "id": student_id,
             "name": name,
             "class": int(class_digit),
             "class_letter": class_letter,
-            "days": []})
+            "days": [{}, {}],
+            "team": ""})
     days.commit()
 
 
@@ -280,7 +289,9 @@ def recount(day: Day, all_subjects: JsonDB) -> dict:
     classes = day.classes_count
     for subject in all_subjects.keys():
         for class_digit in range(*classes):
-            subject_result = all_subject_results(day.results, subject, class_digit)
+            a = day.results
+            print(a)
+            subject_result = all_subject_results(a, subject, class_digit)
             if subject_result:
                 user_id, max_result = max(subject_result.items(), key=lambda x: x[1])
                 if max_result > all_subjects[subject][1] / 2:
@@ -303,6 +314,17 @@ def get_subject_result(student: dict, subject: str) -> float:
         if subject in i.keys():
             return i[subject]
     raise KeyError("Такого ключа не существует!")
+
+
+def convert_to_betters(users: list) -> list:
+    day = deepcopy(users)
+    for user_ind in range(len(day)):
+        results = sorted(
+            {subject: result[1] for users_day in day[user_ind]["days"] for subject, result in users_day.items()}.items(),
+            key=lambda x: -x[1])
+        day[user_ind].pop("days")
+        day[user_ind]["results"] = {key: value for key, value in results}
+    return day
 
 
 if __name__ == '__main__':

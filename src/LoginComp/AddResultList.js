@@ -35,9 +35,9 @@ const CutonAction = (props) => {
 
 const PostFilter = (props) => (
   <Filter {...props}>
-    <TextInput label="Искать" source="id" alwaysOn />
-    <ReferenceInput label="User" source="name" reference="users" allowEmpty>
-      <SelectInput optionText="id" />
+     <TextInput label='Search' source='id' alwaysOn />
+    <ReferenceInput label='User' source='name' reference='users' allowEmpty>
+      <SelectInput optionText='name' />
     </ReferenceInput>
   </Filter>
 );

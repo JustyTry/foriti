@@ -40,7 +40,7 @@ const AddAdminList = (props) => {
 
   useEffect(() => {
     fetchtodo(todo);
-  }, [todo]);
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
 

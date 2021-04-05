@@ -9,6 +9,7 @@ import AdminPage from './LoginComp/Admin';
 import { ProtectedRoute } from './LoginComp/ProtectedRoute';
 import UndefPage from './LoginComp/UndefPage';
 import UserInfo from './Pages/InfoPage'
+import TopUsers from './Pages/TopUsers';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         </Route> */}
         <Route exact path='/top'>
           <Navbar/>
+          <TopUsers />
         </Route>
         <Route path='/userinfo'>
           <Navbar/>

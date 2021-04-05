@@ -10,9 +10,9 @@ const Navbar = () => {
         </NavLink>
         <Bars />
         <NavMenu>
-        <NavLink to="/top" activeStyle>
+         <NavLink to="/top" activeStyle>
             Лучшие результаты
-          </NavLink>
+          </NavLink> 
           <NavLink to="/first" activeStyle>
             Первый день
           </NavLink>

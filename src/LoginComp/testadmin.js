@@ -1,6 +1,7 @@
 
 import {fetchUtils} from "react-admin";
 import restProvider from "ra-data-simple-rest";
+import { stringify } from "query-string";
 const apiUrl =
     "http://localhost:5000";
  
@@ -19,7 +20,9 @@ const apiUrl =
     const httpClient = fetchUtils.fetchJson;
       const apiUrl =
     "http://localhost:5000";
-      const url = `http://localhost:5000/${resource}`;
+      const url = `http://localhost:5000/${resource}/${stringify(
+        query
+      )}`;
 
       return httpClient(url).then(({ headers, json }) => ({
         data: json.users.map((record) => ({ id: record.id, ...record })),
